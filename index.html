@@ -103,12 +103,13 @@
     <script>
         function generatePDF() {
             const element = document.getElementById("pdf");
-            //nazwa = document.getElementById('PK').innerText;
+
             const options = {
                 filename: `Wydruk.pdf`,
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
+
             html2pdf().set(options).from(element).save();
         }
     </script>
@@ -127,7 +128,8 @@
                 <td>Plik(tmp):</td>
                 <td>
                     <input type="file" id="fileInput" style="display: none;" accept=".tmp" />
-                    <input id="loadButton" type="button" value="Wczytaj" onclick="document.getElementById('fileInput').click();" />
+                    <input id="loadButton" type="button" value="Wczytaj"
+                        onclick="document.getElementById('fileInput').click();" />
                 </td>
             </tr>
             <tr></tr>
@@ -174,6 +176,25 @@
             return result;
         }
 
+        function calculateNumberOfPages() {
+            const element = document.getElementById("pdf");
+
+            const options = {
+                filename: `Wydruk.pdf`,
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf()
+                .set(options)
+                .from(element)
+                .toPdf()
+                .get('pdf')
+                .then(function (pdf) {
+                    document.getElementById('printButton').textContent = `Drukuj (${pdf.internal.getNumberOfPages()} str.)`;
+                });
+        }
+
         document.getElementById('fileInput').addEventListener('change', function (event) {
 
             const file = event.target.files[0];
@@ -208,7 +229,6 @@
 
                 data.forEach((entry, index) => {
                     args = entry.trim().split('│').filter(tekst => tekst.trim() !== "").map(_ => _.trim());
-                    console.log(args);
 
                     if (index == 5) {
                         pkId = args[1]
@@ -270,11 +290,15 @@
 
                 paddingRange.addEventListener("input", (e) => {
                     pdfWrapper.style.padding = `${paddingRange.value}mm`;
+                    calculateNumberOfPages();
                 });
                 fontRange.addEventListener("input", (e) => {
                     pdfWrapper.style.fontSize = `${fontRange.value}pt`;
                     document.getElementById('nr-ewid').fontSize = `${fontRange.value + 5}pt`;
+                    calculateNumberOfPages();
                 });
+
+                calculateNumberOfPages();
             }
 
             reader.readAsText(file, 'ibm866');
