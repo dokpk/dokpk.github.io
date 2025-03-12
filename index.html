@@ -255,7 +255,7 @@
                             next++;
                         }
 
-                        pdfHandle.innerHTML += `<tr style="text-align: center;"> <td class="border">${entryNumber}</td> <td class="border" style="text-align: left;">${args[1]}</td> <td class="border">${docNumber}</td> <td class="border">${docDate}</td> <td class="border">${args[2]}</td> <td class="border">${args[3]}</td> <td class="border">${args[4]}</td></tr>`;
+                        pdfHandle.innerHTML += `<tr style="text-align: center;"> <td class="border">${entryNumber}</td> <td class="border" style="text-align: left;">${args[1]}</td> <td class="border">${docNumber}</td> <td class="border">${docDate}</td> <td class="border">${args[2]}</td> <td class="border">${args[3]}</td> <td class="border" style="text-align: right;">${args[4]}</td></tr>`;
                     }
                     else if (args.length == 3 && args[0].match(/^\d{2}-\d{2}-\d{4}$/)) {
                         ewidNumber = `${args[1]}/${args[2]}`;
@@ -266,7 +266,7 @@
                     `
                     <tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td>Nr ewid.</td> <td id='nr-ewid' style="font-weight: 700;">${ewidNumber}</td> </tr>
                     <tr style="font-weight: 700;"> <td> </td> <td>Politechnika Łódzka</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td></tr>
-                    <tr style="font-weight: 700;"> <td> </td> <td>K W E S T U R A</td> <td> </td> <td colspan="2">POLECENIE KSIĘG.</td> <td colspan="2">${pkId}</td></tr>
+                    <tr style="font-weight: 700;"> <td> </td> <td>K W E S T U R A</td> <td> </td> <td colspan="2">POLECENIE KSIĘGOWANIA</td> <td colspan="2">${pkId}</td></tr>
                     <tr style="font-weight: 700;"> <td> </td> <td>90-924 Łódź, ul. Żeromskiego 116</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td></tr>
                     <tr style="font-weight: 700;"> <td> </td> <td>NIP 727-002-18-95</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td></tr>
                     <tr> <td> </td> <td></td> <td> </td> <td> </td> <td>Data wystawienia:</td> <td> </td> <td>${rlDate}</td></tr>
