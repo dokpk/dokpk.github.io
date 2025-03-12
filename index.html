@@ -1,0 +1,285 @@
+<html>
+
+<head>
+    <meta title="PK">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        #panel {
+            position: fixed;
+
+            left: 3%;
+            top: 25%;
+
+            transform: translateY(-25%);
+
+            padding: 1rem;
+            border: 0.1rem solid black;
+            border-radius: 0.5rem;
+        }
+
+        #panel label {
+            width: 100%;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        #panel table {
+            font-size: 0.8rem;
+        }
+
+        #panel tr {
+            padding-top: 1rem;
+        }
+
+        #panel input[type=button],
+        button {
+            width: 100%;
+            font-size: 0.8rem;
+        }
+
+        #panel input[type=range] {
+            zoom: 0.7;
+            width: 100%;
+            background-color: aqua;
+        }
+
+        #pdf-wrapper {
+            width: 210mm;
+            max-width: 210mm;
+
+            height: 90%;
+
+            top: 50%;
+            left: 50%;
+
+            position: fixed;
+
+            transform: translate(-50%, -50%);
+
+            border: 0.1rem solid black;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            border-bottom: none;
+
+            z-index: -1;
+        }
+
+        #pdf {
+            width: 100%;
+            font-size: 10pt;
+            padding: 5mm;
+            border-spacing: 0;
+        }
+
+        #nr-ewid {
+            font-size: 12pt;
+        }
+
+        table {
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+
+        td {
+            padding: 1mm;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        .border {
+            border: 0.1mm solid black;
+        }
+
+        .header {
+            background-color: gainsboro;
+        }
+    </style>
+    <script>
+        function generatePDF() {
+            const element = document.getElementById("pdf");
+            //nazwa = document.getElementById('PK').innerText;
+            const options = {
+                filename: `Wydruk.pdf`,
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(options).from(element).save();
+        }
+    </script>
+</head>
+
+<body>
+    <div id="panel">
+        <table>
+            <tr style="text-align: center;">
+                <td colspan="2"><label><span style="font-weight: 700;">🖶</span> PK - Wydruk</label></td>
+            </tr>
+            <tr></tr>
+            <tr></tr>
+            <tr></tr>
+            <tr>
+                <td>Plik(tmp):</td>
+                <td>
+                    <input type="file" id="fileInput" style="display: none;" accept=".tmp" />
+                    <input id="loadButton" type="button" value="Wczytaj" onclick="document.getElementById('fileInput').click();" />
+                </td>
+            </tr>
+            <tr></tr>
+            <tr></tr>
+            <tr>
+                <td>Margines:</td>
+                <td><input id="paddingRange" disabled type="range" min="0" max="10" value="5" /></td>
+            </tr>
+            <tr></tr>
+            <tr></tr>
+            <tr>
+                <td>Czcionka:</td>
+                <td><input id="fontRange" value="10" disabled type="range" min="7" max="13" /></td>
+            </tr>
+            <tr></tr>
+            <tr></tr>
+            <tr>
+                <td colspan="2"><button id="printButton" onclick="generatePDF()" disabled>Drukuj</button></td>
+            </tr>
+        </table>
+    </div>
+    <div id="pdf-wrapper">
+        <table id="pdf">
+        </table>
+    </div>
+
+    <script>
+        function decodePL866(text) {
+            const PL866Mapping = {
+                1081: 'ę', 1069: 'Ł', 1048: 'ł'
+            };
+
+            let result = '';
+
+            for (let i = 0; i < text.length; i++) {
+                const charCode = text.charCodeAt(i);
+                if (PL866Mapping[charCode]) {
+                    result += PL866Mapping[charCode];
+                } else {
+                    result += String.fromCharCode(charCode);
+                }
+            }
+
+            return result;
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            const loadButton = document.getElementById('loadButton');
+
+            loadButton.setAttribute('disabled', true);
+            loadButton.value = 'Ok.';
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const pdfHandle = document.getElementById('pdf');
+
+                pdfHandle.innerHTML =
+                    `
+                    <tr class='header' style="text-align: center;"> <td class="border">L.p.</td> <td class="border">Opis</td> <td class="border">Nr dok.</td> <td class="border">Data dok.</td> <td class="border">Winien</td> <td class="border">Ma</td> <td class="border">Kwota</td> </tr>
+                `;
+
+                const text = decodePL866(e.target.result);
+
+                const data = text.split('\n');
+
+                pkId = ''
+                rlDate = ''
+                ewidNumber = ''
+                sum = ''
+
+                entryNumber = 0;
+
+                data.forEach((entry, index) => {
+                    args = entry.trim().split('│').filter(tekst => tekst.trim() !== "").map(_ => _.trim());
+                    console.log(args);
+
+                    if (index == 5) {
+                        pkId = args[1]
+                        rlDate = args[2]
+                    }
+                    else if (args.length == 5 && args[3].includes('Razem')) {
+                        sum = args[4];
+                    }
+                    else if (args.length == 5 && args[0] == `${entryNumber + 1}`) {
+                        entryNumber++;
+
+                        docNumber = ''
+                        docDate = ''
+
+                        next = index + 1; while (true) {
+                            if (data[next].includes('nr dok.:')) {
+                                docNumber = data[next].match(/nr dok\.:([0-9]+)/)?.[1];
+                                docDate = data[next].match(/data dok\.:([0-9\-]+)/)?.[1];
+                                break;
+                            }
+
+                            next++;
+                        }
+
+                        pdfHandle.innerHTML += `<tr style="text-align: center;"> <td class="border">${entryNumber}</td> <td class="border" style="text-align: left;">${args[1]}</td> <td class="border">${docNumber}</td> <td class="border">${docDate}</td> <td class="border">${args[2]}</td> <td class="border">${args[3]}</td> <td class="border">${args[4]}</td></tr>`;
+                    }
+                    else if (args.length == 3 && args[0].match(/^\d{2}-\d{2}-\d{4}$/)) {
+                        ewidNumber = `${args[1]}/${args[2]}`;
+                    }
+                });
+
+                pdfHandle.innerHTML =
+                    `
+                    <tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td>Nr ewid.</td> <td id='nr-ewid' style="font-weight: 700;">${ewidNumber}</td> </tr>
+                    <tr style="font-weight: 700;"> <td> </td> <td>Politechnika Łódzka</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td></tr>
+                    <tr style="font-weight: 700;"> <td> </td> <td>K W E S T U R A</td> <td> </td> <td colspan="2">POLECENIE KSIĘG.</td> <td colspan="2">${pkId}</td></tr>
+                    <tr style="font-weight: 700;"> <td> </td> <td>90-924 Łódź, ul. Żeromskiego 116</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td></tr>
+                    <tr style="font-weight: 700;"> <td> </td> <td>NIP 727-002-18-95</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td></tr>
+                    <tr> <td> </td> <td></td> <td> </td> <td> </td> <td>Data wystawienia:</td> <td> </td> <td>${rlDate}</td></tr>
+                    <tr> <td> </td> <td></td> <td> </td> <td> </td> <td></td> <td> </td> <td>​</td></tr>
+                    <tr> <td> </td> <td></td> <td> </td> <td> </td> <td></td> <td> </td> <td>​</td></tr>
+                    <tr style="text-align: center;"> <td> </td> <td></td> <td> </td> <td> </td> <td class="border header" colspan="2">Konto</td> <td></td></tr>
+                    `
+                    + pdfHandle.innerHTML
+                    +
+                    `
+                    <tr> <td colspan="2" class="border" style="text-align: center;">Sporządził(a):</td> <td colspan="2" class="border" style="text-align: center;">Zatwierdził(a):</td> <td></td> <td class="border" style="text-align: center;font-weight: 700;">Razem</td> <td class="border" style="text-align: center;font-weight: 700;">${sum}</td></tr>
+                    <tr> <td colspan="2" class="border"></td> <td colspan="2" class="border"></td> <td>​<br>​</td> <td></td> <td></td></tr>
+                `;
+
+                const paddingRange = document.getElementById('paddingRange');
+                const fontRange = document.getElementById('fontRange');
+                const printButton = document.getElementById('printButton');
+                const pdfWrapper = document.getElementById('pdf');
+
+                printButton.removeAttribute("disabled");
+                fontRange.removeAttribute("disabled");
+                paddingRange.removeAttribute("disabled");
+
+                paddingRange.addEventListener("input", (e) => {
+                    pdfWrapper.style.padding = `${paddingRange.value}mm`;
+                });
+                fontRange.addEventListener("input", (e) => {
+                    pdfWrapper.style.fontSize = `${fontRange.value}pt`;
+                    document.getElementById('nr-ewid').fontSize = `${fontRange.value + 5}pt`;
+                });
+            }
+
+            reader.readAsText(file, 'ibm866');
+        });
+    </script>
+</body>
+
+</html>
