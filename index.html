@@ -10,13 +10,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
+        #pw {
+            position: fixed;
+            height: 30%;
+            width: 100%;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+        }
+        #sp {
+            position: fixed;
+            height: 20%;
+            width: 100%;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(to top, white, transparent);
+        }
         #panel {
             position: fixed;
 
-            left: 3%;
-            top: 25%;
+            left: 50%;
+            top: 50%;
 
-            transform: translateY(-25%);
+            transform: translate(-50%, -50%);
 
             padding: 1rem;
             border: 0.1rem solid black;
@@ -51,8 +69,6 @@
 
         #pdf-wrapper {
             width: 210mm;
-            max-width: 210mm;
-
             height: 90%;
 
             top: 50%;
@@ -71,10 +87,13 @@
         }
 
         #pdf {
-            width: 100%;
-            font-size: 10pt;
+            width: 210mm;
+            max-width: 210mm;
+            font-size: 9pt;
             padding: 5mm;
             border-spacing: 0;
+            font-family: Arial, sans-serif;
+            font-weight: 500;
         }
 
         #nr-ewid {
@@ -95,7 +114,7 @@
         }
 
         .border {
-            border: 0.1mm solid black;
+            border: 0.05mm solid black;
         }
 
         .header {
@@ -118,41 +137,47 @@
 </head>
 
 <body>
-    <div id="panel">
-        <table>
-            <tr style="text-align: center;">
-                <td colspan="2"><label><span style="font-weight: 700;">🖶</span> PK - Wydruk</label></td>
-            </tr>
-            <tr></tr>
-            <tr></tr>
-            <tr></tr>
-            <tr>
-                <td>Plik(tmp):</td>
-                <td>
-                    <input type="file" id="fileInput" style="display: none;" accept=".tmp" />
-                    <input id="loadButton" type="button" value="Wczytaj"
-                        onclick="document.getElementById('fileInput').click();" />
-                </td>
-            </tr>
-            <tr></tr>
-            <tr></tr>
-            <tr>
-                <td>Margines:</td>
-                <td><input id="paddingRange" disabled type="range" min="0" max="10" value="5" /></td>
-            </tr>
-            <tr></tr>
-            <tr></tr>
-            <tr>
-                <td>Czcionka:</td>
-                <td><input id="fontRange" value="10" disabled type="range" min="7" max="13" /></td>
-            </tr>
-            <tr></tr>
-            <tr></tr>
-            <tr>
-                <td colspan="2"><button id="printButton" onclick="generatePDF()" disabled>Drukuj</button></td>
-            </tr>
-        </table>
+    <div id="sp">
+
     </div>
+    <div id="pw">
+        <div id="panel">
+            <table>
+                <tr style="text-align: center;">
+                    <td colspan="2"><label><span style="font-weight: 700; color: rgb(255, 0, 230);">🖶</span> PK - Wydruk</label></td>
+                </tr>
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+                <tr>
+                    <td>Plik(tmp):</td>
+                    <td>
+                        <input type="file" id="fileInput" style="display: none;" accept=".tmp" />
+                        <input id="loadButton" type="button" value="Wczytaj"
+                            onclick="document.getElementById('fileInput').click();" />
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr></tr>
+                <tr>
+                    <td>Margines:</td>
+                    <td><input id="paddingRange" disabled type="range" min="0" max="10" value="5" /></td>
+                </tr>
+                <tr></tr>
+                <tr></tr>
+                <tr>
+                    <td>Czcionka:</td>
+                    <td><input id="fontRange" value="9" disabled type="range" min="6" max="12" /></td>
+                </tr>
+                <tr></tr>
+                <tr></tr>
+                <tr>
+                    <td colspan="2"><button id="printButton" onclick="generatePDF()" disabled>Drukuj</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
     <div id="pdf-wrapper">
         <table id="pdf">
         </table>
@@ -277,7 +302,7 @@
                     + pdfHandle.innerHTML
                     +
                     `
-                    <tr> <td colspan="2" class="border" style="text-align: center;">Sporządził(a):</td> <td colspan="2" class="border" style="text-align: center;">Zatwierdził(a):</td> <td></td> <td class="border" style="text-align: center;font-weight: 700;">Razem</td> <td class="border" style="text-align: center;font-weight: 700;">${sum}</td></tr>
+                    <tr> <td colspan="2" class="border" style="text-align: center;">Sporządził(a):</td> <td colspan="2" class="border" style="text-align: center;">Zatwierdził(a):</td> <td></td> <td class="border" style="text-align: center;font-weight: 700;">Razem</td> <td class="border" style="text-align: right;font-weight: 700;">${sum}</td></tr>
                     <tr> <td colspan="2" class="border"></td> <td colspan="2" class="border"></td> <td>​<br>​</td> <td></td> <td></td></tr>
                 `;
 
