@@ -7,6 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat&display=swap">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -119,6 +120,10 @@
 
         .header {
             background-color: gainsboro;
+        }
+
+        .byhand {
+            font-family: 'Caveat', cursive;
         }
     </style>
     <script>
@@ -251,15 +256,19 @@
                 rlDate = ''
                 ewidNumber = ''
                 sum = ''
+                spn = ''
 
                 entryNumber = 0;
 
                 data.forEach((entry, index) => {
                     args = entry.trim().split('│').filter(tekst => tekst.trim() !== "").map(_ => _.trim());
-
+                    console.log(args);
                     if (index == 5) {
                         pkId = args[1]
                         rlDate = args[2]
+                    }
+                    else if (args.length == 2 && args[1] == '├───────────────┼───────────────┼───────────────┤') {
+                        spn = args[0]
                     }
                     else if (args.length == 5 && args[3].includes('Razem')) {
                         sum = args[4];
@@ -303,7 +312,7 @@
                     +
                     `
                     <tr> <td colspan="2" class="border" style="text-align: center;">Sporządził(a):</td> <td colspan="2" class="border" style="text-align: center;">Zatwierdził(a):</td> <td></td> <td class="border" style="text-align: center;font-weight: 700;">Razem</td> <td class="border" style="text-align: right;font-weight: 700;">${sum}</td></tr>
-                    <tr> <td colspan="2" class="border"></td> <td colspan="2" class="border"></td> <td>​<br>​</td> <td></td> <td></td></tr>
+                    <tr> <td colspan="2" class="border byhand" style="text-align: center;">${spn}</td> <td colspan="2" class="border"></td> <td>​<br>​</td> <td></td> <td></td></tr>
                 `;
 
                 const paddingRange = document.getElementById('paddingRange');
