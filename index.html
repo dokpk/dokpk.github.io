@@ -288,6 +288,7 @@
             // document.getElementById('nr-ewid').style.color = `${cval2}`;
         }
         colorInput.addEventListener('input', (event) => {
+            const colorInput = document.getElementById('colorInput');
             setCookie('color', `${colorInput.value}`, '99999999');
             recolor();
         });
