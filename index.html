@@ -272,7 +272,7 @@
             const colorInput = document.getElementById('colorInput');
             // const colorInput2 = document.getElementById('colorInput2');
 
-            const cval = colorInput.value;
+            const cval = getCookie(cookieColorName);
             // const cval2 = colorInput2.value;
 
             colorFront.style.backgroundColor = `${cval}`;
