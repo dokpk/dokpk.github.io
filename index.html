@@ -198,7 +198,7 @@
     <div id="pw">
         <div id="panel">
             <button onclick="pickColor()" id="color-input-front"></button>
-            <input type='color' value='#80ef80' class='bar' id='colorInput'>
+            <input type='color' class='bar' id='colorInput'>
             <!-- <button onclick="pickColor2()" id="color-input-front2"></button>
             <input type='color' value='#000000' class='bar' id='colorInput2'> -->
             <table>
@@ -285,7 +285,6 @@
                 elements[i].style.backgroundColor = `${cval}`;
             }
 
-            console.log(`set ${cval}`);
             setCookie('color', `${cval}`, '99999999');
 
             // document.getElementById('nr-ewid').style.color = `${cval2}`;
