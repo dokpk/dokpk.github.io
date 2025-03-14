@@ -285,13 +285,12 @@
                 elements[i].style.backgroundColor = `${cval}`;
             }
 
+            console.log(`set ${cval}`);
             setCookie('color', `${cval}`, '99999999');
 
             // document.getElementById('nr-ewid').style.color = `${cval2}`;
         }
         colorInput.addEventListener('input', (event) => {
-            setCookie('color', `${cval}`, '99999999');
-            console.log(`set $${cval}`);
             recolor();
         });
         // document.getElementById('colorInput2').addEventListener('input', (event) => {
