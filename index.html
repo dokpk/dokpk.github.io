@@ -288,7 +288,7 @@
             // document.getElementById('nr-ewid').style.color = `${cval2}`;
         }
         colorInput.addEventListener('input', (event) => {
-            setCookie('color', `${cval}`, '99999999');
+            setCookie('color', `${colorInput.value}`, '99999999');
             recolor();
         });
         // document.getElementById('colorInput2').addEventListener('input', (event) => {
