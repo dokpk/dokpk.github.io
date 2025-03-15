@@ -313,7 +313,25 @@
     <script>
         function decodePL866(text) {
             const PL866Mapping = {
-                1081: 'ę', 1069: 'Ł', 1048: 'ł'
+                1077: 'ą',
+                1046: 'ć',
+                1081: 'ę',
+                1048: 'ł',
+                1092: 'ń',
+                1074: 'ó',
+                1064: 'ś',
+                9563: 'ż',
+                1083: 'ź',
+                1076: 'Ą',
+                1055: 'Ć',
+                1080: 'Ę',
+                1069: 'Ł',
+                1091: 'Ń',
+                1088: 'Ó',
+                1063: 'Ś',
+                9564: 'Ż',
+                1053: 'Ź',
+
             };
 
             let result = '';
@@ -380,6 +398,7 @@
                 ewidNumber = ''
                 sum = ''
                 spn = ''
+                addc = ''
 
                 entryNumber = 0;
 
@@ -406,13 +425,33 @@
                             if (data[next].includes('nr dok.:')) {
                                 docNumber = data[next].match(/nr dok\.:([a-zA-Z0-9]+)/)?.[1];
                                 docDate = data[next].match(/data dok\.:([0-9\-]+)/)?.[1];
+
+                                while (true) {
+                                    next++;
+                                    args2 = data[next].trim().split('│').filter(tekst => tekst.trim() !== "").map(_ => _.trim());
+
+                                    if (args2.length == 0) {
+                                        
+                                        args3 = data[next -1].trim().split('│').filter(tekst => tekst.trim() !== "").map(_ => _.trim());
+                                        
+                                        if (!args3[0].includes('.:')) {
+                                            addc = `<br>${args3[0]}`;
+                                        }
+
+                                        break;
+                                    }
+
+                                }
+
                                 break;
                             }
 
                             next++;
                         }
 
-                        pdfHandle.innerHTML += `<tr style="text-align: center;"> <td class="border">${entryNumber}</td> <td class="border" style="text-align: left;">${args[1]}</td> <td class="border">${docNumber}</td> <td class="border">${docDate}</td> <td class="border">${args[2]}</td> <td class="border">${args[3]}</td> <td class="border" style="text-align: right;">${args[4]}</td></tr>`;
+                        pdfHandle.innerHTML += `<tr style="text-align: center;"> <td class="border">${entryNumber}</td> <td class="border" style="text-align: left;">${args[1]}${addc}</td> <td class="border">${docNumber}</td> <td class="border">${docDate}</td> <td class="border">${args[2]}</td> <td class="border">${args[3]}</td> <td class="border" style="text-align: right;">${args[4]}</td></tr>`;
+                        
+                        addc = '';
                     }
                     else if (args.length == 3 && args[0].match(/^\d{2}-\d{2}-\d{4}$/)) {
                         ewidNumber = `${args[1]}/${args[2]}`;
