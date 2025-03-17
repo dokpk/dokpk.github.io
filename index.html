@@ -171,16 +171,33 @@
     </style>
     <script>
         function generatePDF() {
-            const element = document.getElementById("pdf");
-            const nrewid = document.getElementById('nr-ewid').innerText;
-            const options = {
-                filename: `${nrewid}.pdf`,
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+    const element = document.getElementById("pdf");
+    const options = {
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
 
-            html2pdf().set(options).from(element).save();
-        }
+    html2pdf()
+        .set(options)
+        .from(element)
+        .toPdf()
+        .get('pdf')
+        .then(function (pdf) {
+            const pdfBlob = pdf.output('blob'); // Tworzymy Blob z PDF
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+
+            // Tworzymy iframe, żeby wydrukować dokument
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none'; // Ukrywamy iframe
+            iframe.src = pdfUrl;
+            document.body.appendChild(iframe);
+
+            iframe.onload = function () {
+                iframe.contentWindow.print(); // Wywołujemy funkcję drukowania
+                document.body.removeChild(iframe); // Usuwamy iframe po wydrukowaniu
+            };
+        });
+}
 
         function pickColor() {
             document.getElementById('colorInput').click();
