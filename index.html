@@ -171,32 +171,20 @@
     </style>
     <script>
         function generatePDF() {
-    const element = document.getElementById("pdf");
+            const element = document.getElementById("pdf");
+    const nrewid = document.getElementById('nr-ewid').innerText;
     const options = {
+        filename: `dupa.pdf`,
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf()
-        .set(options)
-        .from(element)
-        .outputPdf('datauristring')
-        .then(function (pdfDataUri) {
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = pdfDataUri; // Bezpośrednie użycie danych base64
-            document.body.appendChild(iframe);
-
-            iframe.onload = function () {
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
-                document.body.removeChild(iframe);
-            };
-        });
-}
-
-
-
+    html2pdf().set(options).from(element).save().then(() => {
+        // Otwórz lokalnie pobrany plik
+        const downloadedFilePath = `dupa.pdf`; // Ścieżka pobranego pliku
+        window.location.href = downloadedFilePath; // Przekierowanie do pliku
+    });
+        }
 
         function pickColor() {
             document.getElementById('colorInput').click();
@@ -447,9 +435,9 @@
                                     args2 = data[next].trim().split('│').filter(tekst => tekst.trim() !== "").map(_ => _.trim());
 
                                     if (args2.length == 0) {
-                                        
-                                        args3 = data[next -1].trim().split('│').filter(tekst => tekst.trim() !== "").map(_ => _.trim());
-                                        
+
+                                        args3 = data[next - 1].trim().split('│').filter(tekst => tekst.trim() !== "").map(_ => _.trim());
+
                                         if (!args3[0].includes('.:')) {
                                             addc = `<br>${args3[0]}`;
                                         }
@@ -466,7 +454,7 @@
                         }
 
                         pdfHandle.innerHTML += `<tr style="text-align: center;"> <td class="border">${entryNumber}</td> <td class="border" style="text-align: left;">${args[1]}${addc}</td> <td class="border">${docNumber}</td> <td class="border">${docDate}</td> <td class="border">${args[2]}</td> <td class="border">${args[3]}</td> <td class="border" style="text-align: right;">${args[4]}</td></tr>`;
-                        
+
                         addc = '';
                     }
                     else if (args.length == 3 && args[0].match(/^\d{2}-\d{2}-\d{4}$/)) {
