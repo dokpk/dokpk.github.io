@@ -180,24 +180,23 @@
     html2pdf()
         .set(options)
         .from(element)
-        .toPdf()
-        .get('pdf')
-        .then(function (pdf) {
-            const pdfBlob = pdf.output('blob'); // Tworzymy Blob z PDF
-            const pdfUrl = URL.createObjectURL(pdfBlob);
-
-            // Tworzymy iframe, żeby wydrukować dokument
+        .outputPdf('datauristring')
+        .then(function (pdfDataUri) {
             const iframe = document.createElement('iframe');
-            iframe.style.display = 'none'; // Ukrywamy iframe
-            iframe.src = pdfUrl;
+            iframe.style.display = 'none';
+            iframe.src = pdfDataUri; // Bezpośrednie użycie danych base64
             document.body.appendChild(iframe);
 
             iframe.onload = function () {
-                iframe.contentWindow.print(); // Wywołujemy funkcję drukowania
-                document.body.removeChild(iframe); // Usuwamy iframe po wydrukowaniu
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+                document.body.removeChild(iframe);
             };
         });
 }
+
+
+
 
         function pickColor() {
             document.getElementById('colorInput').click();
